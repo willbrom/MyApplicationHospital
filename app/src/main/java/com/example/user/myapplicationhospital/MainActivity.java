@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private static final String FIRST_STAGE = "first";
     private static final String SECOND_STAGE = "second";
     private static final String THIRD_STAGE = "third";
+    private static final String FOURTH_STAGE = "fourth";
     private BottomSheetBehavior bottomSheetBehavior;
     private LottieAnimationView extraAnimation;
     private FrameLayout bottomSheet;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private Intent speechIntent;
     private String doctorNameSelected;
     private int bodyProblem;
+    private int randFever;
     private boolean haveFileAsked;
     private boolean haveAppointmentAsked;
     private boolean tellNameAsked;
@@ -100,10 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         includeBottomScreen = (View) findViewById(R.id.include_bottom_screen);
         nextButton = (Button) findViewById(R.id.next_button);
         extraAnimation = (LottieAnimationView) findViewById(R.id.extra_animation);
-        extraAnimation.setAnimation("thermometer.json");
-        extraAnimation.setVisibility(View.VISIBLE);
-        extraAnimation.playAnimation();
-        extraAnimation.loop(true);
         micImageView.setOnTouchListener(this);
         speechRecognizer.setRecognitionListener(this);
         initializeTextToSpeech();
@@ -139,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
             case THIRD_STAGE:
                 thirdStage();
+                break;
+            case FOURTH_STAGE:
+                fourthStage();
                 break;
         }
     }
@@ -281,6 +282,73 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }.start();
     }
 
+    private void fourthStage() {
+        new CountDownTimer(20000, 1000) {
+            @Override
+            public void onTick(long l) {
+                switch ((int) (l/1000)) {
+                    case 18:
+                        profileImageView.setImageResource(R.drawable.doctor_in_office);
+                        profileTextView.setTextSize(14);
+                        profileTextView.setText("I would like to have your blood sample test report");
+                        textToSpeech.speak("I would like to have your blood sample test report", TextToSpeech.QUEUE_FLUSH, null, null);
+//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_here_it_is);
+//                        mediaPlayer.start();
+                        break;
+                    case 15:
+                        profileImageView.setImageResource(R.drawable.doctor_in_office);
+                        profileTextView.setText("Kindly go to the lab");
+                        profileTextView.setTextSize(18);
+                        textToSpeech.speak("Kindly go to the lab", TextToSpeech.QUEUE_FLUSH, null, null);
+                        break;
+                    case 13:
+                        profileTextView.setTextSize(18);
+                        includeBottomScreen.setVisibility(View.INVISIBLE);
+                        mainImageView.setImageResource(R.drawable.time_lapse);
+                        break;
+                    case 10:
+                        mainImageView.setImageResource(R.drawable.waiting_area);
+                        includeBottomScreen.setVisibility(View.VISIBLE);
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText("Mr. John");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_name_call);
+                        mediaPlayer.start();
+                        break;
+                    case 8:
+                        profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
+                        profileTextView.setText("Yes");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_yes);
+                        mediaPlayer.start();
+                        break;
+                    case 6:
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText("Please, come with me");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_come_with_me);
+                        mediaPlayer.start();
+                        break;
+                    case 4:
+                        profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
+                        profileTextView.setText("Ok");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_ok);
+                        mediaPlayer.start();
+                        break;
+                    case 2:
+                        secondStageCompleted = true;
+                        micWalletContainer.setVisibility(View.GONE);
+                        profileTextView.setText("");
+                        profileImageView.setVisibility(View.INVISIBLE);
+                        nextButton.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
+    }
+
     public void onClickWallet(View view) {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -329,6 +397,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             nextButton.setVisibility(View.GONE);
                             break;
                         case 10:
+                            micWalletContainer.setVisibility(View.VISIBLE);
+                            profileImageView.setVisibility(View.VISIBLE);
+                            nextButton.setVisibility(View.GONE);
                             includeBottomScreen.setVisibility(View.VISIBLE);
                             mainImageView.setImageResource(R.drawable.reception_2nd);
                             profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
@@ -373,6 +444,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             nextButton.setVisibility(View.GONE);
                             break;
                         case 7:
+                            nextButton.setVisibility(View.GONE);
+                            micWalletContainer.setVisibility(View.VISIBLE);
+                            profileImageView.setVisibility(View.VISIBLE);
                             includeBottomScreen.setVisibility(View.VISIBLE);
                             mainImageView.setImageResource(R.drawable.doctors_office);
                             profileImageView.setImageResource(R.drawable.doctor_in_office);
@@ -383,6 +457,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         case 4:
                             bodyPartHighlighted = true;
                             extraAnimation.setVisibility(View.VISIBLE);
+                            extraAnimation.setAnimation("body.json");
                             extraAnimation.playAnimation(1, 20);
                             bodyProblem = new Random().nextInt(3);
                             switch (bodyProblem) {
@@ -533,10 +608,17 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 wrongAnswer("one day");
         } else if(haveFeverAsked) {
             Log.d(TAG, "haveFeverAsked");
-            if (TextUtils.equals(result, "yes") || TextUtils.equals(result, "no"))
-                rightAnswer("haveFeverAsked");
-            else
-                wrongAnswer("haveFeverAsked");
+            if (randFever == 0 || randFever == 2) {
+                if (TextUtils.equals(result, "yes"))
+                    rightAnswer("haveFeverAsked");
+                else
+                    wrongAnswer("haveFeverAsked");
+            } else if (randFever == 1) {
+                if (TextUtils.equals(result, "no"))
+                    rightAnswer("haveFeverAsked");
+                else
+                    wrongAnswer("haveFeverAsked");
+            }
         } else {
             for (String docName : doctorNames) {
                 if (TextUtils.equals(result, docName)) {
@@ -555,7 +637,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         else if (check.equals("day"))
             Toast.makeText(this, "There is no such day", Toast.LENGTH_SHORT).show();
         else if (check.equals("bodyProblem"))
-            Toast.makeText(this, "This is not the problem", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "This is not the right problem", Toast.LENGTH_SHORT).show();
+        else if (check.equals("haveFeverAsked") ) {
+            if (randFever == 1)
+                Toast.makeText(this, "You have fever, please try again.", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, "You don't have fever, please try again.", Toast.LENGTH_SHORT).show();
+        }
         else
             Toast.makeText(this, "That was not the right answer", Toast.LENGTH_SHORT).show();
     }
@@ -657,17 +745,27 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             mediaPlayer.start();
             extraAnimation.setAnimation("thermometer.json");
             extraAnimation.setVisibility(View.VISIBLE);
+            extraAnimation.playAnimation(1, 17);
+            randFever = new Random().nextInt(3);
+            switch (randFever) {
+                case 0:
+                    Log.d(TAG, "fever");
+                    extraAnimation.playAnimation(18, 18);
+                    break;
+                case 1:
+                    Log.d(TAG, "no fever");
+                    extraAnimation.playAnimation(21, 21);
+                    break;
+                case 2:
+                    Log.d(TAG, "fever");
+                    extraAnimation.playAnimation(23, 23);
+                    break;
+            }
             haveFeverAsked = true;
         } else if (haveFeverAsked) {
             Log.d(TAG, "HaveFeverInRightAnswer");
             haveFeverAsked = false;
-//            haveFeverAnswered = true;
-//            fifthTimer.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    runAnimation();
-//                }
-//            }, 2000, 4000);
+            startStage(FOURTH_STAGE);
         } else {
             int randomNum = random.nextInt(1);
             switch (randomNum) {
