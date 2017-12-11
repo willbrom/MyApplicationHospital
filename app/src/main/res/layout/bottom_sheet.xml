@@ -56,7 +56,7 @@
             app:layout_constraintTop_toBottomOf="@+id/hospital_file_label_textView" />
 
         <ImageView
-            android:id="@+id/green_tick_hospital_imageView"
+            android:id="@+id/green_tick_hospital_file_imageView"
             android:layout_width="25dp"
             android:layout_height="19dp"
             android:layout_marginStart="12dp"
@@ -71,18 +71,17 @@
             android:layout_marginStart="12dp"
             app:layout_constraintStart_toEndOf="@+id/appointment_label_textView"
             app:layout_constraintTop_toTopOf="@+id/appointment_label_textView"
-            app:srcCompat="@drawable/greentick"
-            android:visibility="visible"/>
+            app:srcCompat="@drawable/greentick" />
 
         <ImageView
-            android:id="@+id/empty_tick_hospital_imageView"
-            android:layout_width="25dp"
-            android:layout_height="19dp"
+            android:id="@+id/empty_tick_hospital_file_imageView"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@+id/hospital_file_label_textView"
             app:layout_constraintTop_toTopOf="@+id/hospital_file_label_textView"
-            app:srcCompat="@drawable/emptytick"
-            android:visibility="invisible"/>
+            app:srcCompat="@drawable/emptytick" />
 
         <ImageView
             android:id="@+id/empty_tick_appointment_imageView"
@@ -92,8 +91,7 @@
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@+id/appointment_label_textView"
             app:layout_constraintTop_toTopOf="@+id/appointment_label_textView"
-            app:srcCompat="@drawable/emptytick"
-            android:visibility="invisible"/>
+            app:srcCompat="@drawable/emptytick" />
 
         <View
             android:id="@+id/view"
