@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private ImageView mainImageView;
     private TextView profileTextView;
     private TextView extraTextView;
+    private Toast errorToast;
     private View includeBottomScreen;
     private ConstraintLayout micWalletContainer;
     private Button nextButton;
@@ -732,6 +733,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         } else if (bodyPartHighlighted) {
             bodyPartHighlighted = false;
             extraAnimation.setVisibility(View.GONE);
+            extraAnimation.loop(false);
+            extraAnimation.setAnimation("thermometer.json");
             profileImageView.setImageResource(R.drawable.doctor_in_office);
             profileTextView.setText("For how long?");
             mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_for_how_long);
@@ -743,24 +746,23 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             profileTextView.setText("Do you have fever?");
             mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_do_you_have_fever);
             mediaPlayer.start();
-            extraAnimation.setAnimation("thermometer.json");
             extraAnimation.setVisibility(View.VISIBLE);
             extraAnimation.playAnimation(1, 17);
-            randFever = new Random().nextInt(3);
-            switch (randFever) {
-                case 0:
-                    Log.d(TAG, "fever");
-                    extraAnimation.playAnimation(18, 18);
-                    break;
-                case 1:
-                    Log.d(TAG, "no fever");
-                    extraAnimation.playAnimation(21, 21);
-                    break;
-                case 2:
-                    Log.d(TAG, "fever");
-                    extraAnimation.playAnimation(23, 23);
-                    break;
-            }
+//            randFever = new Random().nextInt(3);
+//            switch (randFever) {
+//                case 0:
+//                    Log.d(TAG, "fever");
+//                    extraAnimation.playAnimation(18, 18);
+//                    break;
+//                case 1:
+//                    Log.d(TAG, "no fever");
+//                    extraAnimation.playAnimation(21, 21);
+//                    break;
+//                case 2:
+//                    Log.d(TAG, "fever");
+//                    extraAnimation.playAnimation(23, 23);
+//                    break;
+//            }
             haveFeverAsked = true;
         } else if (haveFeverAsked) {
             Log.d(TAG, "HaveFeverInRightAnswer");
@@ -819,10 +821,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         case MotionEvent.ACTION_DOWN:
                             view.setPressed(true);
                             if (speechRecognizer.isRecognitionAvailable(this) && !isRecording) {
+                                Log.d(TAG, "recognition available");
                                 initSpeechRecognition();
                                 speechRecognizer.startListening(speechIntent);
                                 micImageView.setImageResource(R.drawable.mic_busy);
                                 isRecording = true;
+                            } else {
+                                Log.d(TAG, "recognition not available");
                             }
                             break;
                         case MotionEvent.ACTION_UP:
@@ -867,9 +872,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onError(int i) {
+        micImageView.setImageResource(R.drawable.mic);
+        speechRecognizer.cancel();
         isRecording = false;
         String errorMessage = getErrorMessage(i);
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        if (errorToast != null) {
+            errorToast.cancel();
+        }
+        errorToast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     @Override
