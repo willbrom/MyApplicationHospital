@@ -7,6 +7,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,10 +19,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.Locale;
 import java.util.Random;
@@ -33,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String FIRST_STAGE = "first";
     private static final String SECOND_STAGE = "second";
+    private static final String THIRD_STAGE = "third";
     private BottomSheetBehavior bottomSheetBehavior;
+    private LottieAnimationView extraAnimation;
     private FrameLayout bottomSheet;
     private boolean selectCashAsked;
     private boolean selectIdAsked;
@@ -44,13 +50,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private ImageView profileImageView;
     private ImageView extraImageView;
     private ImageView micImageView;
+    private ImageView mainImageView;
     private TextView profileTextView;
     private TextView extraTextView;
+    private View includeBottomScreen;
+    private ConstraintLayout micWalletContainer;
+    private Button nextButton;
     private MediaPlayer mediaPlayer;
     private TextToSpeech textToSpeech;
     private SpeechRecognizer speechRecognizer;
     private Intent speechIntent;
     private String doctorNameSelected;
+    private int bodyProblem;
     private boolean haveFileAsked;
     private boolean haveAppointmentAsked;
     private boolean tellNameAsked;
@@ -68,20 +79,33 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private String userName;
     private Random random = new Random();
     private Bundle params = new Bundle();
+    private boolean firstStageCompleted;
+    private boolean secondStageCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         bottomSheet = (FrameLayout) findViewById(R.id.bottom_sheet);
+        micWalletContainer = (ConstraintLayout) findViewById(R.id.mic_wallet_container);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         profileTextView = (TextView) findViewById(R.id.profile_textView);
         extraTextView = (TextView) findViewById(R.id.extra_textView);
         profileImageView = (ImageView) findViewById(R.id.profile_imageView);
         extraImageView = (ImageView) findViewById(R.id.extra_imageView);
+        mainImageView = (ImageView) findViewById(R.id.main_imageView);
         micImageView = (ImageView) findViewById(R.id.mic_imageView);
+        includeBottomScreen = (View) findViewById(R.id.include_bottom_screen);
+        nextButton = (Button) findViewById(R.id.next_button);
+        extraAnimation = (LottieAnimationView) findViewById(R.id.extra_animation);
+        extraAnimation.setAnimation("thermometer.json");
+        extraAnimation.setVisibility(View.VISIBLE);
+        extraAnimation.playAnimation();
+        extraAnimation.loop(true);
         micImageView.setOnTouchListener(this);
+        speechRecognizer.setRecognitionListener(this);
         initializeTextToSpeech();
     }
 
@@ -97,15 +121,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     private void initSpeechRecognition() {
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        speechRecognizer.setRecognitionListener(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en-US");
+        speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 2000);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
         speechIntent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{"en"});
-        speechIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
     }
 
     private void startStage(String stage) {
@@ -116,8 +137,48 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             case SECOND_STAGE:
                 secondStage();
                 break;
-
+            case THIRD_STAGE:
+                thirdStage();
+                break;
         }
+    }
+
+    private void firstStage() {
+        new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long l) {
+                switch ((int) (l/1000)) {
+                    case 8:
+                        profileImageView.setVisibility(View.VISIBLE);
+                        profileTextView.setVisibility(View.VISIBLE);
+                        profileImageView.setImageResource(R.drawable.nurse_reception);
+                        profileTextView.setText("How can i help you");
+                        textToSpeech.speak("How can i help you?", TextToSpeech.QUEUE_FLUSH, null, null);
+                        break;
+                    case 5:
+                        profileImageView.setImageResource(R.drawable.man_hospital);
+                        profileTextView.setText("I would like to see a doctor");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_see_doc);
+                        mediaPlayer.start();
+                        break;
+                    case 2:
+                        profileImageView.setImageResource(R.drawable.nurse_reception);
+                        profileTextView.setText("Which doctor?");
+                        textToSpeech.speak("Which doctor?", TextToSpeech.QUEUE_FLUSH, null, null);
+                        extraImageView.setImageResource(R.drawable.doctors);
+                        extraImageView.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        enableMic = true;
+                        break;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
     }
 
     private void secondStage() {
@@ -138,6 +199,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         profileTextView.setText("Please, go to the clinic");
                         textToSpeech.speak("Please, go to the clinic", TextToSpeech.QUEUE_FLUSH, null, null);
                         break;
+                    case 2:
+                        firstStageCompleted = true;
+                        micWalletContainer.setVisibility(View.GONE);
+                        profileTextView.setText("");
+                        profileImageView.setVisibility(View.INVISIBLE);
+                        nextButton.setVisibility(View.VISIBLE);
+                        break;
                 }
             }
 
@@ -148,30 +216,60 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }.start();
     }
 
-    private void firstStage() {
+    private void thirdStage() {
         new CountDownTimer(20000, 1000) {
             @Override
             public void onTick(long l) {
                 switch ((int) (l/1000)) {
-                    case 17:
-                        profileImageView.setVisibility(View.VISIBLE);
-                        profileTextView.setVisibility(View.VISIBLE);
-                        profileImageView.setImageResource(R.drawable.nurse_reception);
-                        profileTextView.setText("How can i help you");
-                        textToSpeech.speak("How can i help you?", TextToSpeech.QUEUE_FLUSH, null, null);
-                        break;
-                    case 12:
+                    case 18:
                         profileImageView.setImageResource(R.drawable.man_hospital);
-                        profileTextView.setText("I would like to see a doctor");
-                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_see_doc);
+                        profileTextView.setText("Here it is");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_here_it_is);
                         mediaPlayer.start();
                         break;
-                    case 7:
-                        profileImageView.setImageResource(R.drawable.nurse_reception);
-                        profileTextView.setText("Which doctor?");
-                        textToSpeech.speak("Which doctor?", TextToSpeech.QUEUE_FLUSH, null, null);
-                        extraImageView.setVisibility(View.VISIBLE);
-                        enableMic = true;
+                    case 16:
+                        profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
+                        profileTextView.setTextSize(15);
+                        profileTextView.setText("Please wait, the nurse will call your name");
+                        textToSpeech.speak("Please wait, the nurse will call your name", TextToSpeech.QUEUE_FLUSH, null, null);
+                        break;
+                    case 13:
+                        profileTextView.setTextSize(18);
+                        includeBottomScreen.setVisibility(View.INVISIBLE);
+                        mainImageView.setImageResource(R.drawable.time_lapse);
+                        break;
+                    case 10:
+                        mainImageView.setImageResource(R.drawable.waiting_area);
+                        includeBottomScreen.setVisibility(View.VISIBLE);
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText("Mr. John");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_name_call);
+                        mediaPlayer.start();
+                        break;
+                    case 8:
+                        profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
+                        profileTextView.setText("Yes");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_yes);
+                        mediaPlayer.start();
+                        break;
+                    case 6:
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText("Please, come with me");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_come_with_me);
+                        mediaPlayer.start();
+                        break;
+                    case 4:
+                        profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
+                        profileTextView.setText("Ok");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_ok);
+                        mediaPlayer.start();
+                        break;
+                    case 2:
+                        secondStageCompleted = true;
+                        micWalletContainer.setVisibility(View.GONE);
+                        profileTextView.setText("");
+                        profileImageView.setVisibility(View.INVISIBLE);
+                        nextButton.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -193,23 +291,125 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     public void onClickWalletItem(View view) {
         view.startAnimation(AnimationUtils.loadAnimation(this, R.anim.image_anim));
-        if (selectCashAsked) {
+        int viewId = view.getId();
+        if (selectCashAsked && viewId == R.id.cash_imageView) {
             Log.d(TAG, "cash");
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            startStage(THIRD_STAGE);
             selectCashAsked = false;
-        } else if (selectIdAsked) {
+        } else if (selectIdAsked && viewId == R.id.id_card_imageView) {
             Log.d(TAG, "id");
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             startStage(SECOND_STAGE);
             selectIdAsked = false;
-        } else if (selectInsuranceAsked) {
+        } else if (selectInsuranceAsked && viewId == R.id.insurance_card_imageView) {
             Log.d(TAG, "insurance");
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            startStage(THIRD_STAGE);
             selectInsuranceAsked = false;
         } else if (selectPrescriptionAsked) {
             Log.d(TAG, "prescription");
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             selectPrescriptionAsked = false;
+        }
+    }
+
+    public void onClickNextButton(View view) {
+        if (firstStageCompleted) {
+            firstStageCompleted = false;
+            new CountDownTimer(16000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    switch ((int) (l / 1000)) {
+                        case 13:
+                            micWalletContainer.setVisibility(View.VISIBLE);
+                            profileImageView.setVisibility(View.VISIBLE);
+                            includeBottomScreen.setVisibility(View.INVISIBLE);
+                            mainImageView.setImageResource(R.drawable.time_lapse);
+                            nextButton.setVisibility(View.GONE);
+                            break;
+                        case 10:
+                            includeBottomScreen.setVisibility(View.VISIBLE);
+                            mainImageView.setImageResource(R.drawable.reception_2nd);
+                            profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
+                            profileTextView.setText("Mr. John");
+                            textToSpeech.speak("Mr. John?", TextToSpeech.QUEUE_FLUSH, null, null);
+                            break;
+                        case 8:
+                            profileImageView.setImageResource(R.drawable.man_hospital_2nd_reception);
+                            profileTextView.setText("Yes");
+                            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_yes);
+                            mediaPlayer.start();
+                            break;
+                        case 7:
+                            profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
+                            profileTextView.setText("Do you have insurance?");
+                            textToSpeech.speak("Do you have insurance?", TextToSpeech.QUEUE_FLUSH, null, null);
+                            haveInsuranceAsked = true;
+                            break;
+                        case 5:
+                            enableMic = true;
+                            break;
+
+                    }
+                }
+                @Override
+                public void onFinish() {
+                }
+            }.start();
+        }
+
+        if (secondStageCompleted) {
+            secondStageCompleted = false;
+            new CountDownTimer(13000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    switch ((int) (l / 1000)) {
+                        case 10:
+                            micWalletContainer.setVisibility(View.VISIBLE);
+                            profileImageView.setVisibility(View.VISIBLE);
+                            includeBottomScreen.setVisibility(View.INVISIBLE);
+                            mainImageView.setImageResource(R.drawable.time_lapse);
+                            nextButton.setVisibility(View.GONE);
+                            break;
+                        case 7:
+                            includeBottomScreen.setVisibility(View.VISIBLE);
+                            mainImageView.setImageResource(R.drawable.doctors_office);
+                            profileImageView.setImageResource(R.drawable.doctor_in_office);
+                            profileTextView.setText("What's the problem?");
+                            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_whats_the_problem);
+                            mediaPlayer.start();
+                            break;
+                        case 4:
+                            bodyPartHighlighted = true;
+                            extraAnimation.setVisibility(View.VISIBLE);
+                            extraAnimation.playAnimation(1, 20);
+                            bodyProblem = new Random().nextInt(3);
+                            switch (bodyProblem) {
+                                case 0:
+                                    extraAnimation.playAnimation(21, 40);
+                                    extraAnimation.loop(true);
+                                    break;
+                                case 1:
+                                    extraAnimation.playAnimation(42, 60);
+                                    extraAnimation.loop(true);
+                                    break;
+                                case 2:
+                                    extraAnimation.playAnimation(62, 80);
+                                    extraAnimation.loop(true);
+                                    break;
+                            }
+                            break;
+                        case 2:
+                            enableMic = true;
+                            break;
+
+                    }
+                }
+                @Override
+                public void onFinish() {
+                }
+            }.start();
         }
     }
 
@@ -253,10 +453,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Log.d(TAG, "checkResult approached!");
         result = result.toLowerCase();
         Log.d(TAG, result);
-        String[] doctorNames = new String[]{"dr jack", "any doctor", "dr ahmad", "dr nancy", "dr ahmed", "doctor nancy", "doctor ahmad", "doctor ahmed", "doctor jack", "any doctor"};
+        String[] doctorNames = new String[]{"dr nancy", "dr ben", "doctor nancy", "doctor ben"};
         String[] daysOfWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
         String[] timeOfDay = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"};
-        String[] whatIsTheProblem = new String[]{"I have headache", "I have stomachache", "I have chest pain", "headache", "stomachache", "chest pain", "stomach ache", "head ache", "chestpain"};
+        String[] whatIsTheProblem = new String[]{"headache", "stomachache", "chest pain", "head ache", "stomach ache", "chestpain"};
         String[] problemForHowLong = new String[]{"1 day", "2 day", "3 day", "4 day", "to day", "too day"};
         String[] morAfterEve = new String[]{"morning", "afternoon", "evening"};
 
@@ -315,13 +515,17 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 wrongAnswer("");
         } else if (bodyPartHighlighted) {
             Log.d(TAG, "bodyPartHighlighted");
-            for (String problem : whatIsTheProblem) {
-                if (TextUtils.equals(result, problem)) {
-                    rightAnswer(problem);
-                    return;
-                }
-            }
-            wrongAnswer("problem");
+            if (bodyProblem == 0 && (result.equals("head ache") || result.equals("headache"))) {
+                rightAnswer("headache");
+                return;
+            } else if (bodyProblem == 1 && (result.equals("chest pain") || result.equals("chestpain"))) {
+                rightAnswer("chest pain");
+                return;
+            } else if (bodyProblem == 2 && (result.equals("stomach ache") || result.equals("stomachache"))) {
+                rightAnswer("stomachache");
+                return;
+            } else
+                wrongAnswer("bodyProblem");
         } else if(forHowLongAsked) {
             if (TextUtils.equals(result, "1 day") || TextUtils.equals(result, "one day") || TextUtils.equals(result, "oneday"))
                 rightAnswer("one day");
@@ -350,6 +554,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Toast.makeText(this, "There is no doctor available with that name", Toast.LENGTH_SHORT).show();
         else if (check.equals("day"))
             Toast.makeText(this, "There is no such day", Toast.LENGTH_SHORT).show();
+        else if (check.equals("bodyProblem"))
+            Toast.makeText(this, "This is not the problem", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, "That was not the right answer", Toast.LENGTH_SHORT).show();
     }
@@ -380,29 +586,33 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         } else if (haveFileAsked) {
             haveFileAsked = false;
+            enableMic = false;
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileTextView.setText("May i have your ID?");
             textToSpeech.speak("May i have your ID?", TextToSpeech.QUEUE_FLUSH, params, "12345");
             selectIdAsked = true;
         } else if (whichDayAsked) {
             whichDayAsked = false;
+            extraImageView.setImageResource(R.drawable.timing);
+            extraImageView.setVisibility(View.VISIBLE);
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileTextView.setText("Morning, afternoon or evening?");
             textToSpeech.speak("Morning, afternoon or evening?", TextToSpeech.QUEUE_FLUSH, params, "12345");
             morAfterEveAsked = true;
         } else if (morAfterEveAsked) {
             morAfterEveAsked = false;
+            extraImageView.setVisibility(View.GONE);
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileTextView.setText("What time?");
             textToSpeech.speak("What time?", TextToSpeech.QUEUE_FLUSH, params, "12345");
             whatTimeAsked = true;
         } else if (whatTimeAsked) {
             whatTimeAsked = false;
+            extraTextView.setText("Your appointment with " + doctorNameSelected + " is on " + daySelected + " at " + timeSelected);
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileImageView.setVisibility(View.INVISIBLE);
             profileTextView.setText("");
-            extraTextView.setText("Your appointment with " + doctorNameSelected + " is on " + daySelected + " at " + timeSelected);
-            new CountDownTimer(3000, 1000) {
+            new CountDownTimer(4000, 1000) {
 
                 @Override
                 public void onTick(long l) {
@@ -420,23 +630,33 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }.start();
         } else if (haveInsuranceAsked) {
             haveInsuranceAsked = false;
-            micImageView.setVisibility(View.INVISIBLE);
+            enableMic = false;
+            profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
             if (check.equals("yes")) {
-                Log.d(TAG, "have insurance");
+                profileTextView.setText("May i have your insurance card?");
                 textToSpeech.speak("May i have your insurance card?", TextToSpeech.QUEUE_FLUSH, params, "12345");
                 selectInsuranceAsked = true;
             } else if (check.equals("no")) {
-                Log.d(TAG, "don't have insurance");
+                profileTextView.setText("it's $15");
                 textToSpeech.speak("it's $15", TextToSpeech.QUEUE_FLUSH, params, "12345");
-//                selectcashAsked = true;
+                selectCashAsked = true;
             }
         } else if (bodyPartHighlighted) {
             bodyPartHighlighted = false;
-            textToSpeech.speak("For how long?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+            extraAnimation.setVisibility(View.GONE);
+            profileImageView.setImageResource(R.drawable.doctor_in_office);
+            profileTextView.setText("For how long?");
+            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_for_how_long);
+            mediaPlayer.start();
             forHowLongAsked = true;
         } else if (forHowLongAsked) {
             forHowLongAsked = false;
-            textToSpeech.speak("Do you have fever?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+            profileImageView.setImageResource(R.drawable.doctor_in_office);
+            profileTextView.setText("Do you have fever?");
+            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_do_you_have_fever);
+            mediaPlayer.start();
+            extraAnimation.setAnimation("thermometer.json");
+            extraAnimation.setVisibility(View.VISIBLE);
             haveFeverAsked = true;
         } else if (haveFeverAsked) {
             Log.d(TAG, "HaveFeverInRightAnswer");
@@ -477,9 +697,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.action_start:
+                extraAnimation.setVisibility(View.GONE);
                 extraImageView.setVisibility(View.GONE);
                 profileImageView.setVisibility(View.INVISIBLE);
                 profileTextView.setVisibility(View.INVISIBLE);
+                micWalletContainer.setVisibility(View.VISIBLE);
+                nextButton.setVisibility(View.GONE);
+                mainImageView.setImageResource(R.drawable.reception);
                 enableMic = false;
                 startStage(FIRST_STAGE);
                 return true;
@@ -496,13 +720,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     switch (motionEvent.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             view.setPressed(true);
-                            if (!isRecording) {
+                            if (speechRecognizer.isRecognitionAvailable(this) && !isRecording) {
                                 initSpeechRecognition();
-                                if (SpeechRecognizer.isRecognitionAvailable(MainActivity.this)) {
-                                    speechRecognizer.startListening(speechIntent);
-                                    micImageView.setImageResource(R.drawable.mic_busy);
-                                    isRecording = true;
-                                }
+                                speechRecognizer.startListening(speechIntent);
+                                micImageView.setImageResource(R.drawable.mic_busy);
+                                isRecording = true;
                             }
                             break;
                         case MotionEvent.ACTION_UP:
@@ -543,15 +765,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onEndOfSpeech() {
-        micImageView.setImageResource(R.drawable.mic);
-        isRecording = false;
     }
 
     @Override
     public void onError(int i) {
-        String errorMessage = getErrorMessage(i);
         isRecording = false;
-        speechRecognizer.destroy();
+        String errorMessage = getErrorMessage(i);
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
     }
 
@@ -560,7 +779,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         String result = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).get(0);
         checkResult(result);
         Log.d(TAG, result);
-        speechRecognizer.destroy();
     }
 
     @Override
