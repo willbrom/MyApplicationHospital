@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/play_headache_imageView"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/play"
             android:onClick="onClickBodyProblem" />
 
@@ -36,8 +36,8 @@
 
         <ImageView
             android:id="@+id/play_chest_pain_imageView"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/play"
             android:onClick="onClickBodyProblem" />
 
@@ -58,8 +58,8 @@
 
         <ImageView
             android:id="@+id/play_stomachache_imageView"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/play"
             android:onClick="onClickBodyProblem" />
 

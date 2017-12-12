@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
@@ -40,8 +41,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private static final String THIRD_STAGE = "third";
     private static final String FOURTH_STAGE = "fourth";
     private static final String FIFTH_STAGE = "fifth";
+    private static final String MR_JOHN = "Mr. John";
+    private static final String MR_ALEX = "Mr. Alex";
+    private static final String MRS_KATE = "Mrs. Kate";
+    private static final String MISS_LILY = "Miss Lily";
     private BottomSheetBehavior bottomSheetBehavior;
     private LottieAnimationView extraAnimation;
+    private LottieAnimationView animationRespondButton;
     private FrameLayout bottomSheet;
     private boolean selectCashAsked;
     private boolean selectIdAsked;
@@ -102,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private boolean secondStageCompleted;
     private boolean thirdStageCompleted;
     private boolean startFirstTime;
+    private ArrayList<String> waitingRoomNames = new ArrayList<>();
+    private ArrayList<Integer> randomCountArrayList = new ArrayList<>();
+    private CountDownTimer waitingRoomCountdownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,10 +143,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         includeBodyProblems = (View) findViewById(R.id.include_body_problems);
         nextButton = (Button) findViewById(R.id.next_button);
         extraAnimation = (LottieAnimationView) findViewById(R.id.extra_animation);
+        animationRespondButton = (LottieAnimationView) findViewById(R.id.animation_respond_button);
         micImageView.setOnTouchListener(this);
         speechRecognizer.setRecognitionListener(this);
         initializeTextToSpeech();
         randomize();
+//            nameCalling();
     }
 
     private void randomize() {
@@ -171,6 +182,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 insuranceCardImageView.setVisibility(View.GONE);
                 insuranceCardTextView.setVisibility(View.GONE);
         }
+
+        waitingRoomNames.add(MR_JOHN);
+        waitingRoomNames.add(MR_ALEX);
+        waitingRoomNames.add(MRS_KATE);
+        waitingRoomNames.add(MISS_LILY);
     }
 
     private void initializeTextToSpeech() {
@@ -286,34 +302,69 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     private void thirdStage() {
-        new CountDownTimer(20000, 1000) {
+        new CountDownTimer(12000, 1000) {
             @Override
             public void onTick(long l) {
                 switch ((int) (l/1000)) {
-                    case 18:
+                    case 10:
                         profileImageView.setImageResource(R.drawable.man_hospital);
                         profileTextView.setText("Here it is");
                         mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_here_it_is);
                         mediaPlayer.start();
                         break;
-                    case 16:
+                    case 8:
                         profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
                         profileTextView.setText("Please wait, the nurse will call your name");
                         textToSpeech.speak("Please wait, the nurse will call your name", TextToSpeech.QUEUE_FLUSH, null, null);
                         break;
-                    case 13:
-                        profileTextView.setTextSize(18);
+                    case 5:
                         includeBottomScreen.setVisibility(View.INVISIBLE);
                         mainImageView.setImageResource(R.drawable.time_lapse);
                         break;
-                    case 10:
+                    case 3:
                         mainImageView.setImageResource(R.drawable.waiting_area);
                         includeBottomScreen.setVisibility(View.VISIBLE);
-                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
-                        profileTextView.setText("Mr. John");
-                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_name_call);
-                        mediaPlayer.start();
+//                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+//                        profileTextView.setText("Mr. John");
+//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_name_call);
+//                        mediaPlayer.start();
                         break;
+//                    case 2:
+//                        profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
+//                        profileTextView.setText("Yes");
+//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_yes);
+//                        mediaPlayer.start();
+//                        break;
+//                    case 6:
+//                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+//                        profileTextView.setText("Please, come with me");
+//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_come_with_me);
+//                        mediaPlayer.start();
+//                        break;
+//                    case 4:
+//                        profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
+//                        profileTextView.setText("Ok");
+//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_ok);
+//                        mediaPlayer.start();
+//                        break;
+                    case 1:
+                        nameCalling();
+                        break;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
+    }
+
+    private void thirdStage101() {
+        new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long l) {
+                switch ((int) (l/1000)) {
                     case 8:
                         profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
                         profileTextView.setText("Yes");
@@ -344,9 +395,80 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             @Override
             public void onFinish() {
-
             }
         }.start();
+    }
+
+    private void nameCalling() {
+        waitingRoomCountdownTimer = new CountDownTimer(15000, 1000) {
+            @Override
+            public void onTick(long l) {
+                final int randName;
+                switch ((int) (l/1000)) {
+                    case 13:
+                        randName = generateRandomIndex();
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText(waitingRoomNames.get(randName));
+                        playNameMp3(waitingRoomNames.get(randName));
+                        break;
+                    case 10:
+                        randName = generateRandomIndex();
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText(waitingRoomNames.get(randName));
+                        playNameMp3(waitingRoomNames.get(randName));
+                        break;
+                    case 7:
+                        randName = generateRandomIndex();
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText(waitingRoomNames.get(randName));
+                        playNameMp3(waitingRoomNames.get(randName));
+                        break;
+                    case 4:
+                        randName = generateRandomIndex();
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText(waitingRoomNames.get(randName));
+                        playNameMp3(waitingRoomNames.get(randName));
+                        break;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                start();
+            }
+        }.start();
+    }
+
+    private int generateRandomIndex() {
+        if (randomCountArrayList.size() == 4)
+            randomCountArrayList.clear();
+        int randomNumber = random.nextInt(4);
+        while (randomCountArrayList.contains(randomNumber))
+            randomNumber = random.nextInt(4);
+        Log.d(TAG, "Random num: " + randomNumber);
+        randomCountArrayList.add(randomNumber);
+        return randomNumber;
+    }
+
+    private void playNameMp3(String name) {
+        switch (name) {
+            case MR_JOHN:
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_mr_john);
+                mediaPlayer.start();
+                break;
+            case MR_ALEX:
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_mr_alex);
+                mediaPlayer.start();
+                break;
+            case MRS_KATE:
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_mrs_kate);
+                mediaPlayer.start();
+                break;
+            case MISS_LILY:
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_miss_lily);
+                mediaPlayer.start();
+                break;
+        }
     }
 
     private void fourthStage() {
@@ -506,6 +628,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     public void onClickNextButton(View view) {
+        nextButton.setEnabled(false);
+        nextButton.setText("Please wait...");
         if (firstStageCompleted) {
             firstStageCompleted = false;
             new CountDownTimer(16000, 1000) {
@@ -517,6 +641,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             mainImageView.setImageResource(R.drawable.time_lapse);
                             break;
                         case 10:
+                            nextButton.setEnabled(true);
+                            nextButton.setText("Next lesson");
                             micWalletContainer.setVisibility(View.VISIBLE);
                             profileImageView.setVisibility(View.VISIBLE);
                             nextButton.setVisibility(View.GONE);
@@ -561,6 +687,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             mainImageView.setImageResource(R.drawable.time_lapse);
                             break;
                         case 7:
+                            nextButton.setEnabled(true);
+                            nextButton.setText("Next lesson");
                             nextButton.setVisibility(View.GONE);
                             micWalletContainer.setVisibility(View.VISIBLE);
                             profileImageView.setVisibility(View.VISIBLE);
@@ -616,6 +744,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             mainImageView.setImageResource(R.drawable.time_lapse);
                             break;
                         case 2:
+                            nextButton.setEnabled(true);
+                            nextButton.setText("Next lesson");
                             prescriptionTextView.setVisibility(View.VISIBLE);
                             prescriptionImageView.setVisibility(View.VISIBLE);
                             nextButton.setVisibility(View.GONE);
@@ -968,6 +1098,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     enableMic = false;
                     startStage(FIRST_STAGE);
                 }
+//                waitingRoomCountdownTimer.cancel();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -1074,5 +1205,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 textToSpeech.speak("Stomachache", TextToSpeech.QUEUE_FLUSH, null, null);
                 break;
         }
+    }
+
+    public void onClickResponseButton(View view) {
+        Toast.makeText(this, "button clicked", Toast.LENGTH_SHORT).show();
     }
 }
