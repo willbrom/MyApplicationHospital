@@ -818,7 +818,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         String[] daysOfWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
         String[] timeOfDay = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"};
         String[] whatIsTheProblem = new String[]{"headache", "stomachache", "chest pain", "head ache", "stomach ache", "chestpain"};
-        String[] problemForHowLong = new String[]{"1 day", "2 day", "3 day", "4 day", "to day", "too day"};
+        String[] problemForHowLong = new String[]{"one day", "two days", "three days", "four days", "oneday", "tooday", "twodays", "two day", "three day", "today's", "today", "threedays", "four day", "fourdays", "threeday", "toodays", "fourday", "1", "2", "3", "4"};
         String[] morAfterEve = new String[]{"morning", "afternoon", "evening"};
 
         if (haveAppointmentAsked) {
@@ -896,10 +896,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             } else
                 wrongAnswer("bodyProblem");
         } else if(forHowLongAsked) {
-            if (TextUtils.equals(result, "1 day") || TextUtils.equals(result, "one day") || TextUtils.equals(result, "oneday"))
-                rightAnswer("one day");
-            else
-                wrongAnswer("one day");
+            for (String s : problemForHowLong) {
+                if (result.contains(s)) {
+                    rightAnswer("one day");
+                    return;
+                }
+            }
+            wrongAnswer("one day");
         } else if(haveFeverAsked) {
             Log.d(TAG, "haveFeverAsked");
             if (randFever == 0 || randFever == 2) {
