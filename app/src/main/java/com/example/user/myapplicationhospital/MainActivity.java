@@ -55,6 +55,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private ImageView mainImageView;
     private ImageView greenTickHospitalFile;
     private ImageView emptyTickHospitalFile;
+    private ImageView greenTickAppointment;
+    private ImageView insuranceCardImageView;
+    private TextView insuranceCardTextView;
+    private ImageView prescriptionImageView;
+    private TextView prescriptionTextView;
+    private ImageView emptyTickAppointment;
     private TextView profileTextView;
     private TextView extraTextView;
     private Toast errorToast;
@@ -69,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int bodyProblem;
     private int randFever;
     private int randHospitalFile;
+    private int randAppointment;
+    private int randInsurance;
     private boolean haveFileAsked;
     private boolean haveAppointmentAsked;
     private boolean tellNameAsked;
@@ -107,20 +115,51 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         micImageView = (ImageView) findViewById(R.id.mic_imageView);
         greenTickHospitalFile = (ImageView) findViewById(R.id.green_tick_hospital_file_imageView);
         emptyTickHospitalFile = (ImageView) findViewById(R.id.empty_tick_hospital_file_imageView);
+        greenTickAppointment = (ImageView) findViewById(R.id.green_tick_appointment_imageView);
+        emptyTickAppointment = (ImageView) findViewById(R.id.empty_tick_appointment_imageView);
+        insuranceCardImageView = (ImageView) findViewById(R.id.insurance_card_imageView);
+        insuranceCardTextView = (TextView) findViewById(R.id.insurance_card_textView);
+        prescriptionImageView = (ImageView) findViewById(R.id.prescription_imageView);
+        prescriptionTextView = (TextView) findViewById(R.id.prescription_textView);
         includeBottomScreen = (View) findViewById(R.id.include_bottom_screen);
         nextButton = (Button) findViewById(R.id.next_button);
         extraAnimation = (LottieAnimationView) findViewById(R.id.extra_animation);
         micImageView.setOnTouchListener(this);
         speechRecognizer.setRecognitionListener(this);
         initializeTextToSpeech();
+        randomize();
+    }
 
-        randHospitalFile = new Random().nextInt(2);
+    private void randomize() {
+        prescriptionTextView.setVisibility(View.GONE);
+        prescriptionImageView.setVisibility(View.GONE);
+
+        randHospitalFile = random.nextInt(2);
+        randAppointment = random.nextInt(2);
+        randInsurance = random.nextInt(2);
         switch (randHospitalFile) {
             case 0:
                 emptyTickHospitalFile.setVisibility(View.INVISIBLE);
                 break;
             case 1:
                 greenTickHospitalFile.setVisibility(View.INVISIBLE);
+        }
+        switch (randAppointment) {
+            case 0:
+                emptyTickAppointment.setVisibility(View.INVISIBLE);
+                break;
+            case 1:
+                greenTickAppointment.setVisibility(View.INVISIBLE);
+
+        }
+        switch (randInsurance) {
+            case 0:
+                insuranceCardImageView.setVisibility(View.VISIBLE);
+                insuranceCardTextView.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                insuranceCardImageView.setVisibility(View.GONE);
+                insuranceCardTextView.setVisibility(View.GONE);
         }
     }
 
@@ -566,6 +605,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             mainImageView.setImageResource(R.drawable.time_lapse);
                             break;
                         case 2:
+                            prescriptionTextView.setVisibility(View.VISIBLE);
+                            prescriptionImageView.setVisibility(View.VISIBLE);
                             nextButton.setVisibility(View.GONE);
                             micWalletContainer.setVisibility(View.VISIBLE);
                             profileImageView.setVisibility(View.VISIBLE);
@@ -635,12 +676,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         if (haveAppointmentAsked) {
             Log.d(TAG, "hasappointmentAsked: " + haveAppointmentAsked);
-            if (TextUtils.equals(result, "yes"))
+            if (TextUtils.equals(result, "yes") && randAppointment == 0)
                 rightAnswer("yes");
-            else if (TextUtils.equals(result, "no"))
+            else if (TextUtils.equals(result, "no") && randAppointment == 1)
                 rightAnswer("no");
             else
-                wrongAnswer("");
+                wrongAnswer("appointment");
         } else if (haveFileAsked) {
             Log.d(TAG, "havefileAsked: " + haveFileAsked);
             if (TextUtils.equals(result, "yes") && randHospitalFile == 0)
@@ -648,7 +689,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             else if (TextUtils.equals(result, "no") && randHospitalFile == 1)
                 rightAnswer("no");
             else
-                wrongAnswer("");
+                wrongAnswer("file");
         } else if (tellNameAsked) {
             Log.d(TAG, "tellNameAsked: " + tellNameAsked);
             userName = result;
@@ -688,9 +729,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             wrongAnswer("time");
         } else if (haveInsuranceAsked) {
             Log.d(TAG, "have insurance asked");
-            if (TextUtils.equals(result, "yes"))
+            if (TextUtils.equals(result, "yes") && randInsurance == 0)
                 rightAnswer("yes");
-            else if (TextUtils.equals(result, "no"))
+            else if (TextUtils.equals(result, "no") && randInsurance == 1)
                 rightAnswer("no");
             else
                 wrongAnswer("");
@@ -741,9 +782,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if (check.equals("doc"))
             Toast.makeText(this, "There is no doctor available with that name", Toast.LENGTH_SHORT).show();
         else if (check.equals("day"))
-            Toast.makeText(this, "There is no such day", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "There is no such day, please try again.", Toast.LENGTH_SHORT).show();
         else if (check.equals("bodyProblem"))
-            Toast.makeText(this, "This is not the right problem", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "This is not the problem you have, please try again.", Toast.LENGTH_SHORT).show();
         else if (check.equals("haveFeverAsked") ) {
             if (randFever == 1)
                 Toast.makeText(this, "You don't have fever, please try again.", Toast.LENGTH_SHORT).show();
