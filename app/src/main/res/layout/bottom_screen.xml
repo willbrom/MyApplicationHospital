@@ -64,15 +64,31 @@
         android:orientation="vertical"
         android:background="@drawable/below_box">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/extra_animation"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="6dp"
-            android:paddingStart="14dp"
-            android:scaleType="fitStart"
-            app:lottie_imageAssetsFolder="images"
-            android:visibility="gone" />
+            android:layout_height="wrap_content">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/extra_animation"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="150dp"
+                android:layout_marginTop="6dp"
+                android:paddingStart="14dp"
+                android:scaleType="fitStart"
+                app:lottie_imageAssetsFolder="images"
+                android:visibility="gone" />
+
+            <include layout="@layout/body_problems"
+                android:id="@+id/include_body_problems"
+                android:layout_height="150dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/extra_imageView"

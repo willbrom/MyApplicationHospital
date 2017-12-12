@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_body_problem"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <ImageView
+            android:id="@+id/play_headache_imageView"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/play"
+            android:onClick="onClickBodyProblem" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="6dp"
+            android:layout_gravity="center_vertical"
+            android:text="Headache"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <ImageView
+            android:id="@+id/play_chest_pain_imageView"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/play"
+            android:onClick="onClickBodyProblem" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="6dp"
+            android:layout_gravity="center_vertical"
+            android:text="Chest pain"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <ImageView
+            android:id="@+id/play_stomachache_imageView"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/play"
+            android:onClick="onClickBodyProblem" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="6dp"
+            android:layout_gravity="center_vertical"
+            android:text="Stomachache"/>
+
+    </LinearLayout>
+
+</LinearLayout>

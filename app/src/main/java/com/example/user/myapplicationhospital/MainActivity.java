@@ -60,11 +60,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private TextView insuranceCardTextView;
     private ImageView prescriptionImageView;
     private TextView prescriptionTextView;
+    private ImageView playHeadAche;
+    private ImageView playChestPain;
+    private ImageView playStomachAche;
     private ImageView emptyTickAppointment;
     private TextView profileTextView;
     private TextView extraTextView;
     private Toast errorToast;
     private View includeBottomScreen;
+    private View includeBodyProblems;
     private ConstraintLayout micWalletContainer;
     private Button nextButton;
     private MediaPlayer mediaPlayer;
@@ -120,8 +124,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         insuranceCardImageView = (ImageView) findViewById(R.id.insurance_card_imageView);
         insuranceCardTextView = (TextView) findViewById(R.id.insurance_card_textView);
         prescriptionImageView = (ImageView) findViewById(R.id.prescription_imageView);
+        playHeadAche = (ImageView) findViewById(R.id.play_headache_imageView);
+        playChestPain = (ImageView) findViewById(R.id.play_chest_pain_imageView);
+        playStomachAche = (ImageView) findViewById(R.id.play_stomachache_imageView);
         prescriptionTextView = (TextView) findViewById(R.id.prescription_textView);
         includeBottomScreen = (View) findViewById(R.id.include_bottom_screen);
+        includeBodyProblems = (View) findViewById(R.id.include_body_problems);
         nextButton = (Button) findViewById(R.id.next_button);
         extraAnimation = (LottieAnimationView) findViewById(R.id.extra_animation);
         micImageView.setOnTouchListener(this);
@@ -563,6 +571,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             break;
                         case 4:
                             bodyPartHighlighted = true;
+                            includeBodyProblems.setVisibility(View.VISIBLE);
                             extraAnimation.setVisibility(View.VISIBLE);
                             extraAnimation.setAnimation("body.json");
                             extraAnimation.playAnimation(1, 20);
@@ -878,6 +887,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         } else if (bodyPartHighlighted) {
             bodyPartHighlighted = false;
+            includeBodyProblems.setVisibility(View.GONE);
             extraAnimation.setVisibility(View.GONE);
             extraAnimation.loop(false);
             extraAnimation.setAnimation("thermometer.json");
@@ -1044,5 +1054,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void onEvent(int i, Bundle bundle) {
 
+    }
+
+    public void onClickBodyProblem(View view) {
+        int viewId = view.getId();
+        switch (viewId) {
+            case R.id.play_headache_imageView:
+                textToSpeech.speak("Headache", TextToSpeech.QUEUE_FLUSH, null, null);
+                break;
+            case R.id.play_chest_pain_imageView:
+                textToSpeech.speak("Chest pain", TextToSpeech.QUEUE_FLUSH, null, null);
+                break;
+            case R.id.play_stomachache_imageView:
+                textToSpeech.speak("Stomachache", TextToSpeech.QUEUE_FLUSH, null, null);
+                break;
+        }
     }
 }
