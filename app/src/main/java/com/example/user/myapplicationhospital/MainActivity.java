@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private static final String SECOND_STAGE = "second";
     private static final String THIRD_STAGE = "third";
     private static final String FOURTH_STAGE = "fourth";
+    private static final String FIFTH_STAGE = "fifth";
     private BottomSheetBehavior bottomSheetBehavior;
     private LottieAnimationView extraAnimation;
     private FrameLayout bottomSheet;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private Bundle params = new Bundle();
     private boolean firstStageCompleted;
     private boolean secondStageCompleted;
+    private boolean thirdStageCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             case FOURTH_STAGE:
                 fourthStage();
                 break;
+            case FIFTH_STAGE:
+                fifthStage();
         }
     }
 
@@ -297,47 +301,115 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     private void fourthStage() {
-        new CountDownTimer(20000, 1000) {
+        new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long l) {
                 switch ((int) (l/1000)) {
-                    case 18:
+                    case 29:
                         extraAnimation.setVisibility(View.GONE);
                         profileImageView.setImageResource(R.drawable.doctor_in_office);
                         profileTextView.setText("I would like to have your blood sample test report.");
-                        textToSpeech.speak("I would like to have your blood sample test report", TextToSpeech.QUEUE_FLUSH, null, null);
-//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_here_it_is);
-//                        mediaPlayer.start();
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_want_blood);
+                        mediaPlayer.start();
                         break;
-                    case 15:
+                    case 25:
                         profileImageView.setImageResource(R.drawable.doctor_in_office);
                         profileTextView.setText("Kindly go to the lab.");
-                        textToSpeech.speak("Kindly go to the lab", TextToSpeech.QUEUE_FLUSH, null, null);
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_go_to_lab);
+                        mediaPlayer.start();
                         break;
-                    case 13:
+                    case 22:
                         includeBottomScreen.setVisibility(View.INVISIBLE);
                         mainImageView.setImageResource(R.drawable.time_lapse);
                         break;
-                    case 10:
+                    case 18:
                         mainImageView.setImageResource(R.drawable.lab);
                         includeBottomScreen.setVisibility(View.VISIBLE);
                         profileImageView.setImageResource(R.drawable.doctor_in_lab);
-                        profileTextView.setText("Please put your hand on the table");
-                        textToSpeech.speak("Please put your hand on the table", TextToSpeech.QUEUE_FLUSH, null, null);
-//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_name_call);
-//                        mediaPlayer.start();
+                        profileTextView.setText("Please extend your arm");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_lab_extend_arm);
+                        mediaPlayer.start();
                         break;
-                    case 7:
+                    case 16:
+                        profileImageView.setImageResource(R.drawable.doctor_in_lab);
+                        profileTextView.setText("so that I can take a blood sample");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_lab_taking_blood);
+                        mediaPlayer.start();
+                        break;
+                    case 13:
                         profileImageView.setImageResource(R.drawable.man_hospital_lab);
                         profileTextView.setText("Ok");
-                        textToSpeech.speak("Ok", TextToSpeech.QUEUE_FLUSH, null, null);
-//                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_yes);
-//                        mediaPlayer.start();
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_ok);
+                        mediaPlayer.start();
                         break;
-                    case 6:
+                    case 11:
                         profileImageView.setImageResource(R.drawable.doctor_in_lab);
-                        profileTextView.setText("Please, come with me");
-                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_male_come_with_me);
+                        profileTextView.setText("I'll send the report to your doctor");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_lab_send_report);
+                        mediaPlayer.start();
+                        break;
+                    case 8:
+                        profileImageView.setImageResource(R.drawable.doctor_in_lab);
+                        profileTextView.setText("and he will give you the prescription");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_lab_he_will_give_pres);
+                        mediaPlayer.start();
+                        break;
+                    case 5:
+                        profileImageView.setImageResource(R.drawable.man_hospital_lab);
+                        profileTextView.setText("Ok");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_ok);
+                        mediaPlayer.start();
+                        break;
+                    case 3:
+                        thirdStageCompleted = true;
+                        micWalletContainer.setVisibility(View.GONE);
+                        profileTextView.setText("");
+                        profileImageView.setVisibility(View.INVISIBLE);
+                        nextButton.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
+    }
+
+    private void fifthStage() {
+        new CountDownTimer(12000, 1000) {
+            @Override
+            public void onTick(long l) {
+                switch ((int) (l/1000)) {
+                    case 11:
+                        profileImageView.setImageResource(R.drawable.man_pharmacy);
+                        profileTextView.setText("Here you go");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_here_you_go);
+                        mediaPlayer.start();
+                        break;
+                    case 9:
+                        profileImageView.setImageResource(R.drawable.pharmacist);
+                        profileTextView.setText("Here is your medicine");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_phar_medicine);
+                        mediaPlayer.start();
+                        break;
+                    case 7:
+                        profileImageView.setImageResource(R.drawable.pharmacist);
+                        profileTextView.setText("You have to take it 3 times a day after meal");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_phar_three_times_a_day);
+                        mediaPlayer.start();
+                        break;
+                    case 4:
+                        profileImageView.setImageResource(R.drawable.pharmacist);
+                        profileTextView.setText("for 2 weeks");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_phar_two_weeks);
+                        mediaPlayer.start();
+                        break;
+                    case 2:
+                        profileImageView.setImageResource(R.drawable.man_pharmacy);
+                        profileTextView.setText("Thanks");
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_thanks);
                         mediaPlayer.start();
                         break;
                 }
@@ -376,9 +448,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             startStage(THIRD_STAGE);
             selectInsuranceAsked = false;
-        } else if (selectPrescriptionAsked) {
+        } else if (selectPrescriptionAsked && viewId == R.id.prescription_imageView) {
             Log.d(TAG, "prescription");
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            startStage(FIFTH_STAGE);
             selectPrescriptionAsked = false;
         }
     }
@@ -391,11 +464,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 public void onTick(long l) {
                     switch ((int) (l / 1000)) {
                         case 13:
-                            micWalletContainer.setVisibility(View.VISIBLE);
-                            profileImageView.setVisibility(View.VISIBLE);
                             includeBottomScreen.setVisibility(View.INVISIBLE);
                             mainImageView.setImageResource(R.drawable.time_lapse);
-                            nextButton.setVisibility(View.GONE);
                             break;
                         case 10:
                             micWalletContainer.setVisibility(View.VISIBLE);
@@ -438,11 +508,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 public void onTick(long l) {
                     switch ((int) (l / 1000)) {
                         case 10:
-                            micWalletContainer.setVisibility(View.VISIBLE);
-                            profileImageView.setVisibility(View.VISIBLE);
                             includeBottomScreen.setVisibility(View.INVISIBLE);
                             mainImageView.setImageResource(R.drawable.time_lapse);
-                            nextButton.setVisibility(View.GONE);
                             break;
                         case 7:
                             nextButton.setVisibility(View.GONE);
@@ -480,6 +547,36 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             enableMic = true;
                             break;
 
+                    }
+                }
+                @Override
+                public void onFinish() {
+                }
+            }.start();
+        }
+
+        if (thirdStageCompleted) {
+            thirdStageCompleted = false;
+            new CountDownTimer(7000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    switch ((int) (l / 1000)) {
+                        case 5:
+                            includeBottomScreen.setVisibility(View.INVISIBLE);
+                            mainImageView.setImageResource(R.drawable.time_lapse);
+                            break;
+                        case 2:
+                            nextButton.setVisibility(View.GONE);
+                            micWalletContainer.setVisibility(View.VISIBLE);
+                            profileImageView.setVisibility(View.VISIBLE);
+                            includeBottomScreen.setVisibility(View.VISIBLE);
+                            mainImageView.setImageResource(R.drawable.pharmacy);
+                            profileImageView.setImageResource(R.drawable.pharmacist);
+                            profileTextView.setText("May I have the prescription?");
+                            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_phar_have_pres);
+                            mediaPlayer.start();
+                            selectPrescriptionAsked = true;
+                            break;
                     }
                 }
                 @Override
@@ -755,26 +852,27 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_do_you_have_fever);
             mediaPlayer.start();
             extraAnimation.setVisibility(View.VISIBLE);
-            extraAnimation.playAnimation(1, 17);
             randFever = new Random().nextInt(3);
             switch (randFever) {
                 case 0:
                     Log.d(TAG, "fever");
-                    extraAnimation.playAnimation(19, 19);
+                    extraAnimation.playAnimation(0, 19);
                     break;
                 case 1:
                     Log.d(TAG, "no fever");
-                    extraAnimation.playAnimation(21, 21);
+                    extraAnimation.playAnimation(25, 42);
                     break;
                 case 2:
                     Log.d(TAG, "fever");
-                    extraAnimation.playAnimation(23, 23);
+                    extraAnimation.playAnimation(47, 70);
                     break;
             }
             haveFeverAsked = true;
         } else if (haveFeverAsked) {
             Log.d(TAG, "HaveFeverInRightAnswer");
             haveFeverAsked = false;
+            enableMic = false;
+            extraAnimation.setVisibility(View.GONE);
             startStage(FOURTH_STAGE);
         } else {
             int randomNum = random.nextInt(1);
@@ -824,7 +922,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int viewId = view.getId();
         switch (viewId) {
             case R.id.mic_imageView:
-                if (enableMic && !textToSpeech.isSpeaking()) {
+                if (enableMic && !textToSpeech.isSpeaking() && !mediaPlayer.isPlaying()) {
                     switch (motionEvent.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             view.setPressed(true);
