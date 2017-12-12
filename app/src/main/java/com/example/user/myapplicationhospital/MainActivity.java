@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private static final String FIRST_STAGE = "first";
     private static final String SECOND_STAGE = "second";
     private static final String THIRD_STAGE = "third";
+    private static final String THIRD_STAGE_101 = "third101";
     private static final String FOURTH_STAGE = "fourth";
     private static final String FIFTH_STAGE = "fifth";
     private static final String MR_JOHN = "Mr. John";
@@ -220,6 +221,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             case THIRD_STAGE:
                 thirdStage();
                 break;
+            case THIRD_STAGE_101:
+                thirdStage101();
+                break;
             case FOURTH_STAGE:
                 fourthStage();
                 break;
@@ -321,7 +325,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         includeBottomScreen.setVisibility(View.INVISIBLE);
                         mainImageView.setImageResource(R.drawable.time_lapse);
                         break;
-                    case 3:
+                    case 2:
+                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
+                        profileTextView.setText("");
                         mainImageView.setImageResource(R.drawable.waiting_area);
                         includeBottomScreen.setVisibility(View.VISIBLE);
 //                        profileImageView.setImageResource(R.drawable.nurse_waiting_area);
@@ -347,15 +353,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 //                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_ok);
 //                        mediaPlayer.start();
 //                        break;
-                    case 1:
-                        nameCalling();
-                        break;
                 }
             }
 
             @Override
             public void onFinish() {
-
+                animationRespondButton.setVisibility(View.VISIBLE);
+                animationRespondButton.playAnimation(0, 170);
+                nameCalling();
             }
         }.start();
     }
@@ -434,6 +439,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             @Override
             public void onFinish() {
+                mediaPlayer.reset();
                 start();
             }
         }.start();
@@ -1208,6 +1214,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     public void onClickResponseButton(View view) {
-        Toast.makeText(this, "button clicked", Toast.LENGTH_SHORT).show();
+        if (profileTextView.getText().equals(MR_JOHN)) {
+            waitingRoomCountdownTimer.cancel();
+            animationRespondButton.playAnimation(170, 220);
+            startStage(THIRD_STAGE_101);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer.release();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
     }
 }
