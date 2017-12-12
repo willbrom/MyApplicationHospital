@@ -101,12 +101,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private boolean firstStageCompleted;
     private boolean secondStageCompleted;
     private boolean thirdStageCompleted;
+    private boolean startFirstTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startFirstTime = true;
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         bottomSheet = (FrameLayout) findViewById(R.id.bottom_sheet);
         micWalletContainer = (ConstraintLayout) findViewById(R.id.mic_wallet_container);
@@ -954,15 +956,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.action_start:
-                extraAnimation.setVisibility(View.GONE);
-                extraImageView.setVisibility(View.GONE);
-                profileImageView.setVisibility(View.INVISIBLE);
-                profileTextView.setVisibility(View.INVISIBLE);
-                micWalletContainer.setVisibility(View.VISIBLE);
-                nextButton.setVisibility(View.GONE);
-                mainImageView.setImageResource(R.drawable.reception);
-                enableMic = false;
-                startStage(FIRST_STAGE);
+                if (startFirstTime) {
+                    startFirstTime = false;
+                    extraAnimation.setVisibility(View.GONE);
+                    extraImageView.setVisibility(View.GONE);
+                    profileImageView.setVisibility(View.INVISIBLE);
+                    profileTextView.setVisibility(View.INVISIBLE);
+                    micWalletContainer.setVisibility(View.VISIBLE);
+                    nextButton.setVisibility(View.GONE);
+                    mainImageView.setImageResource(R.drawable.reception);
+                    enableMic = false;
+                    startStage(FIRST_STAGE);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
