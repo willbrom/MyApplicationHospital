@@ -242,7 +242,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         profileTextView.setVisibility(View.VISIBLE);
                         profileImageView.setImageResource(R.drawable.nurse_reception);
                         profileTextView.setText("How can i help you");
-                        textToSpeech.speak("How can i help you?", TextToSpeech.QUEUE_FLUSH, null, null);
+//                        textToSpeech.speak("How can i help you?", TextToSpeech.QUEUE_FLUSH, null, null);
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_how_can_i_help_you);
+                        mediaPlayer.start();
                         break;
                     case 5:
                         profileImageView.setImageResource(R.drawable.man_hospital);
@@ -253,7 +255,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     case 2:
                         profileImageView.setImageResource(R.drawable.nurse_reception);
                         profileTextView.setText("Which doctor?");
-                        textToSpeech.speak("Which doctor?", TextToSpeech.QUEUE_FLUSH, null, null);
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_which_doctor);
+                        mediaPlayer.start();
+//                        textToSpeech.speak("Which doctor?", TextToSpeech.QUEUE_FLUSH, null, null);
                         extraImageView.setImageResource(R.drawable.doctors);
                         extraImageView.setVisibility(View.VISIBLE);
                         break;
@@ -271,11 +275,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     private void secondStage() {
-        new CountDownTimer(7000, 1000) {
+        new CountDownTimer(9000, 1000) {
             @Override
             public void onTick(long l) {
                 switch ((int) (l/1000)) {
-                    case 6:
+                    case 8:
                         profileImageView.setVisibility(View.VISIBLE);
                         profileTextView.setVisibility(View.VISIBLE);
                         profileImageView.setImageResource(R.drawable.man_hospital);
@@ -283,12 +287,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_here_it_is);
                         mediaPlayer.start();
                         break;
-                    case 4:
+                    case 6:
                         profileImageView.setImageResource(R.drawable.nurse_reception);
                         profileTextView.setText("Please, go to the clinic");
-                        textToSpeech.speak("Please, go to the clinic", TextToSpeech.QUEUE_FLUSH, null, null);
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_please_go_to_the_clinic);
+                        mediaPlayer.start();
                         break;
-                    case 2:
+                    case 3:
                         firstStageCompleted = true;
                         micWalletContainer.setVisibility(View.GONE);
                         profileTextView.setText("");
@@ -319,7 +324,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     case 8:
                         profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
                         profileTextView.setText("Please wait, the nurse will call your name");
-                        textToSpeech.speak("Please wait, the nurse will call your name", TextToSpeech.QUEUE_FLUSH, null, null);
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_sec_reception_please_wait_the_nurse_will_call_your_name);
+                        mediaPlayer.start();
                         break;
                     case 5:
                         includeBottomScreen.setVisibility(View.INVISIBLE);
@@ -642,9 +648,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 @Override
                 public void onTick(long l) {
                     switch ((int) (l / 1000)) {
-                        case 13:
+                        case 14:
                             includeBottomScreen.setVisibility(View.INVISIBLE);
-                            mainImageView.setImageResource(R.drawable.time_lapse);
+                            mainImageView.setImageResource(R.drawable.reception_lapse);
                             break;
                         case 10:
                             nextButton.setEnabled(true);
@@ -667,7 +673,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         case 7:
                             profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
                             profileTextView.setText("Do you have insurance?");
-                            textToSpeech.speak("Do you have insurance?", TextToSpeech.QUEUE_FLUSH, null, null);
+                            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_sec_reception_do_you_have_insurance);
+                            mediaPlayer.start();
                             haveInsuranceAsked = true;
                             break;
                         case 5:
@@ -709,21 +716,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             bodyPartHighlighted = true;
                             includeBodyProblems.setVisibility(View.VISIBLE);
                             extraAnimation.setVisibility(View.VISIBLE);
-                            extraAnimation.setAnimation("body.json");
-                            extraAnimation.playAnimation(1, 20);
                             bodyProblem = new Random().nextInt(3);
                             switch (bodyProblem) {
                                 case 0:
-                                    extraAnimation.playAnimation(21, 40);
-                                    extraAnimation.loop(true);
+                                    extraAnimation.setAnimation("head.json");
+                                    extraAnimation.playAnimation(1, 35);
+                                    extraAnimation.loop(false);
                                     break;
                                 case 1:
-                                    extraAnimation.playAnimation(42, 60);
-                                    extraAnimation.loop(true);
+                                    extraAnimation.setAnimation("chest.json");
+                                    extraAnimation.playAnimation(1, 35);
+                                    extraAnimation.loop(false);
                                     break;
                                 case 2:
-                                    extraAnimation.playAnimation(62, 80);
-                                    extraAnimation.loop(true);
+                                    extraAnimation.setAnimation("stomach.json");
+                                    extraAnimation.playAnimation(1, 35);
+                                    extraAnimation.loop(false);
                                     break;
                             }
                             break;
@@ -955,18 +963,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 haveAppointment = false;
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileTextView.setText("May I have your name?");
-            textToSpeech.speak("May I have your name?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_may_i_have_your_name);
+            mediaPlayer.start();
             tellNameAsked = true;
         } else if (tellNameAsked) {
             tellNameAsked = false;
             profileImageView.setImageResource(R.drawable.nurse_reception);
             if (haveAppointment) {
                 profileTextView.setText("Do you have a file?");
-                textToSpeech.speak("Do you have a file?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+                profileTextView.setText("Do you have a file?");
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_do_you_have_a_file);
+                mediaPlayer.start();
                 haveFileAsked = true;
             } else {
                 profileTextView.setText("Which day?");
-                textToSpeech.speak("Which day?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_which_day);
+                mediaPlayer.start();
                 whichDayAsked = true;
             }
         } else if (haveFileAsked) {
@@ -974,7 +986,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             enableMic = false;
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileTextView.setText("May i have your ID?");
-            textToSpeech.speak("May i have your ID?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_may_i_have_your_id);
+            mediaPlayer.start();
             selectIdAsked = true;
         } else if (whichDayAsked) {
             whichDayAsked = false;
@@ -982,14 +995,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             extraImageView.setVisibility(View.VISIBLE);
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileTextView.setText("Morning, afternoon or evening?");
-            textToSpeech.speak("Morning, afternoon or evening?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_mor_after_eve);
+            mediaPlayer.start();
             morAfterEveAsked = true;
         } else if (morAfterEveAsked) {
             morAfterEveAsked = false;
             extraImageView.setVisibility(View.GONE);
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileTextView.setText("What time?");
-            textToSpeech.speak("What time?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_what_time);
+            mediaPlayer.start();
             whatTimeAsked = true;
         } else if (whatTimeAsked) {
             whatTimeAsked = false;
@@ -1009,7 +1024,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     extraTextView.setText("");
                     profileImageView.setVisibility(View.VISIBLE);
                     profileTextView.setText("Do you have a file?");
-                    textToSpeech.speak("Do you have a file?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+                    mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_do_you_have_a_file);
+                    mediaPlayer.start();
                     haveFileAsked = true;
                 }
             }.start();
@@ -1019,11 +1035,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
             if (check.equals("yes")) {
                 profileTextView.setText("May i have your insurance card?");
-                textToSpeech.speak("May i have your insurance card?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_sec_reception_may_i_have_your_insurance_card);
+                mediaPlayer.start();
                 selectInsuranceAsked = true;
             } else if (check.equals("no")) {
                 profileTextView.setText("it's $15");
-                textToSpeech.speak("it's $15", TextToSpeech.QUEUE_FLUSH, params, "12345");
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_sec_reception_it_is_fifteen);
+                mediaPlayer.start();
                 selectCashAsked = true;
             }
         } else if (bodyPartHighlighted) {
@@ -1073,7 +1091,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     profileImageView.setImageResource(R.drawable.nurse_reception);
                     profileTextView.setText("Do you have an appointment?");
                     extraImageView.setVisibility(View.GONE);
-                    textToSpeech.speak("Do you have an appointment?", TextToSpeech.QUEUE_FLUSH, params, "12345");
+                    mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_do_you_have_appointment);
+                    mediaPlayer.start();
                     haveAppointmentAsked = true;
                     break;
                 case 1:
@@ -1205,13 +1224,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int viewId = view.getId();
         switch (viewId) {
             case R.id.play_headache_imageView:
-                textToSpeech.speak("Headache", TextToSpeech.QUEUE_FLUSH, null, null);
+               textToSpeech.speak("headache", TextToSpeech.QUEUE_FLUSH, null, null);
                 break;
             case R.id.play_chest_pain_imageView:
-                textToSpeech.speak("Chest pain", TextToSpeech.QUEUE_FLUSH, null, null);
+                textToSpeech.speak("chest pain", TextToSpeech.QUEUE_FLUSH, null, null);
                 break;
             case R.id.play_stomachache_imageView:
-                textToSpeech.speak("Stomachache", TextToSpeech.QUEUE_FLUSH, null, null);
+                textToSpeech.speak("stomach ache", TextToSpeech.QUEUE_FLUSH, null, null);
                 break;
         }
     }
@@ -1227,12 +1246,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onPause() {
         super.onPause();
-        mediaPlayer.release();
+        if (mediaPlayer != null)
+           mediaPlayer.release();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mediaPlayer.release();
+        if (mediaPlayer != null)
+           mediaPlayer.release();
     }
 }
