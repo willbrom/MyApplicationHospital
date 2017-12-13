@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/recipe_background">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Appointment Day"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="52dp"
+        android:layout_marginRight="52dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="62dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/recipe_day_textView"
+            tools:text="Tuesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Title" />
+
+        <TextView
+            android:text="/"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Headline"/>
+
+        <TextView
+            android:id="@+id/recipe_time_of_day_textView"
+            tools:text="Morning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Title" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/recipe_doc_textView"
+        tools:text="Dr Nancy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_marginTop="12dp" />
+
+    <TextView
+        android:id="@+id/recipe_time_textView"
+        tools:text="10:00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_marginTop="12dp" />
+
+</LinearLayout>

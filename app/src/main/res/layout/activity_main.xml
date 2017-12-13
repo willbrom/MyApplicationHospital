@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.user.myapplicationhospital.MainActivity">
 
+    <include
+        android:id="@+id/include_recipe_screen"
+        layout="@layout/recipe_screen"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/main_imageView"
         android:layout_width="match_parent"

@@ -72,10 +72,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private ImageView playStomachAche;
     private ImageView emptyTickAppointment;
     private TextView profileTextView;
+    private TextView recipeDayTextView;
+    private TextView recipeTimeOfDayTextView;
+    private TextView recipeDocTextView;
+    private TextView recipeTimeTextView;
     private TextView extraTextView;
     private Toast errorToast;
     private View includeBottomScreen;
     private View includeBodyProblems;
+    private View includeRecipeScreen;
     private ConstraintLayout micWalletContainer;
     private Button nextButton;
     private MediaPlayer mediaPlayer;
@@ -125,6 +130,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         profileTextView = (TextView) findViewById(R.id.profile_textView);
         extraTextView = (TextView) findViewById(R.id.extra_textView);
+        recipeDayTextView = (TextView) findViewById(R.id.recipe_day_textView);
+        recipeTimeOfDayTextView = (TextView) findViewById(R.id.recipe_time_of_day_textView);
+        recipeDocTextView = (TextView) findViewById(R.id.recipe_doc_textView);
+        recipeTimeTextView = (TextView) findViewById(R.id.recipe_time_textView);
         profileImageView = (ImageView) findViewById(R.id.profile_imageView);
         extraImageView = (ImageView) findViewById(R.id.extra_imageView);
         mainImageView = (ImageView) findViewById(R.id.main_imageView);
@@ -142,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         prescriptionTextView = (TextView) findViewById(R.id.prescription_textView);
         includeBottomScreen = (View) findViewById(R.id.include_bottom_screen);
         includeBodyProblems = (View) findViewById(R.id.include_body_problems);
+        includeRecipeScreen = (View) findViewById(R.id.include_recipe_screen);
         nextButton = (Button) findViewById(R.id.next_button);
         extraAnimation = (LottieAnimationView) findViewById(R.id.extra_animation);
         animationRespondButton = (LottieAnimationView) findViewById(R.id.animation_respond_button);
@@ -149,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         speechRecognizer.setRecognitionListener(this);
         initializeTextToSpeech();
         randomize();
-//            nameCalling();
     }
 
     private void randomize() {
@@ -328,8 +337,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         mediaPlayer.start();
                         break;
                     case 5:
-                        includeBottomScreen.setVisibility(View.INVISIBLE);
-                        mainImageView.setImageResource(R.drawable.time_lapse);
+//                        includeBottomScreen.setVisibility(View.INVISIBLE);
+//                        mainImageView.setImageResource(R.drawable.time_lapse);
                         break;
                     case 2:
                         profileImageView.setImageResource(R.drawable.nurse_waiting_area);
@@ -502,8 +511,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         mediaPlayer.start();
                         break;
                     case 22:
-                        includeBottomScreen.setVisibility(View.INVISIBLE);
-                        mainImageView.setImageResource(R.drawable.time_lapse);
+//                        includeBottomScreen.setVisibility(View.INVISIBLE);
+//                        mainImageView.setImageResource(R.drawable.time_lapse);
                         break;
                     case 18:
                         mainImageView.setImageResource(R.drawable.lab);
@@ -662,7 +671,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             mainImageView.setImageResource(R.drawable.reception_2nd);
                             profileImageView.setImageResource(R.drawable.nurse_reception_2nd);
                             profileTextView.setText("Mr. John");
-                            textToSpeech.speak("Mr. John?", TextToSpeech.QUEUE_FLUSH, null, null);
+                            mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_sec_reception_mr_john);
+                            mediaPlayer.start();
                             break;
                         case 8:
                             profileImageView.setImageResource(R.drawable.man_hospital_2nd_reception);
@@ -696,8 +706,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 public void onTick(long l) {
                     switch ((int) (l / 1000)) {
                         case 10:
-                            includeBottomScreen.setVisibility(View.INVISIBLE);
-                            mainImageView.setImageResource(R.drawable.time_lapse);
+//                            includeBottomScreen.setVisibility(View.INVISIBLE);
+//                            mainImageView.setImageResource(R.drawable.time_lapse);
                             break;
                         case 7:
                             nextButton.setEnabled(true);
@@ -754,8 +764,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 public void onTick(long l) {
                     switch ((int) (l / 1000)) {
                         case 5:
-                            includeBottomScreen.setVisibility(View.INVISIBLE);
-                            mainImageView.setImageResource(R.drawable.time_lapse);
+//                            includeBottomScreen.setVisibility(View.INVISIBLE);
+//                            mainImageView.setImageResource(R.drawable.time_lapse);
                             break;
                         case 2:
                             nextButton.setEnabled(true);
@@ -822,12 +832,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Log.d(TAG, "checkResult approached!");
         result = result.toLowerCase();
         Log.d(TAG, result);
-        String[] doctorNames = new String[]{"dr nancy", "dr ben", "doctor nancy", "doctor ben"};
-        String[] daysOfWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+        String[] doctorNames = new String[]{"Dr Nancy", "Dr Ben", "Doctor Nancy", "Doctor Ben"};
+        String[] daysOfWeek = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
         String[] timeOfDay = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"};
         String[] whatIsTheProblem = new String[]{"headache", "stomachache", "chest pain", "head ache", "stomach ache", "chestpain"};
         String[] problemForHowLong = new String[]{"one day", "two days", "three days", "four days", "oneday", "tooday", "twodays", "two day", "three day", "today's", "today", "threedays", "four day", "fourdays", "threeday", "toodays", "fourday", "1", "2", "3", "4"};
-        String[] morAfterEve = new String[]{"morning", "afternoon", "evening"};
+        String[] morAfterEve = new String[]{"Morning", "Afternoon", "Evening"};
 
         if (haveAppointmentAsked) {
             Log.d(TAG, "hasappointmentAsked: " + haveAppointmentAsked);
@@ -857,8 +867,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         } else if (whichDayAsked) {
             for (String day : daysOfWeek) {
-                if (TextUtils.equals(result, day)) {
-                    daySelected = day;
+                daySelected = day;
+                if (TextUtils.equals(result, day.toLowerCase())) {
                     rightAnswer(day);
                     return;
                 }
@@ -866,8 +876,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             wrongAnswer("day");
         } else if (morAfterEveAsked) {
             for (String mAE : morAfterEve) {
-                if (TextUtils.equals(result, mAE)) {
-                    mAESelected = mAE;
+                mAESelected = mAE;
+                if (TextUtils.equals(result, mAE.toLowerCase())) {
                     rightAnswer(mAE);
                     return;
                 }
@@ -875,8 +885,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             wrongAnswer("mAE");
         } else if (whatTimeAsked) {
             for (String time : timeOfDay) {
-                if (result.contains(time)) {
-                    timeSelected = time + " o'clock";
+                timeSelected = time + " o'clock";
+                if (result.contains(time.toLowerCase())) {
                     rightAnswer(time);
                     return;
                 }
@@ -926,8 +936,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         } else {
             for (String docName : doctorNames) {
-                if (TextUtils.equals(result, docName)) {
-                    doctorNameSelected = docName;
+                doctorNameSelected = docName;
+                if (TextUtils.equals(result, docName.toLowerCase())) {
                     rightAnswer(docName);
                     return;
                 }
@@ -1008,7 +1018,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             whatTimeAsked = true;
         } else if (whatTimeAsked) {
             whatTimeAsked = false;
-            extraTextView.setText("Your appointment with " + doctorNameSelected + " is on " + daySelected + " at " + timeSelected);
+            enableMic = false;
+            recipeDayTextView.setText(daySelected);
+            recipeTimeOfDayTextView.setText(mAESelected);
+            recipeDocTextView.setText(doctorNameSelected);
+            recipeTimeTextView.setText(timeSelected);
+            includeRecipeScreen.setVisibility(View.VISIBLE);
+            mainImageView.setVisibility(View.INVISIBLE);
+            includeBottomScreen.setVisibility(View.INVISIBLE);
+//            extraTextView.setText("Your appointment with " + doctorNameSelected + " is on " + daySelected + " at " + timeSelected);
             profileImageView.setImageResource(R.drawable.nurse_reception);
             profileImageView.setVisibility(View.INVISIBLE);
             profileTextView.setText("");
@@ -1021,6 +1039,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                 @Override
                 public void onFinish() {
+                    includeRecipeScreen.setVisibility(View.GONE);
+                    mainImageView.setVisibility(View.VISIBLE);
+                    includeBottomScreen.setVisibility(View.VISIBLE);
+                    enableMic = true;
                     extraTextView.setText("");
                     profileImageView.setVisibility(View.VISIBLE);
                     profileTextView.setText("Do you have a file?");
@@ -1246,14 +1268,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onPause() {
         super.onPause();
-        if (mediaPlayer != null)
-           mediaPlayer.release();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null)
-           mediaPlayer.release();
     }
 }
