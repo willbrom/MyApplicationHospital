@@ -20,7 +20,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/reception" />
+        android:visibility="gone" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/main_lottieView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_imageAssetsFolder="images" />
+
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_respond_button"
@@ -33,7 +45,7 @@
         app:layout_constraintBottom_toTopOf="@id/include_bottom_screen"
         app:srcCompat="@drawable/ic_launcher_background"
         android:onClick="onClickResponseButton"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <include
         android:id="@+id/include_bottom_screen"
@@ -42,13 +54,15 @@
         android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/include_bottom_sheet"
         layout="@layout/bottom_sheet_container"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

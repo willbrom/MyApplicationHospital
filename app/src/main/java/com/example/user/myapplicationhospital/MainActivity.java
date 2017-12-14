@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private BottomSheetBehavior bottomSheetBehavior;
     private LottieAnimationView extraAnimation;
     private LottieAnimationView animationRespondButton;
+    private LottieAnimationView mainLottieView;
     private FrameLayout bottomSheet;
     private boolean selectCashAsked;
     private boolean selectIdAsked;
@@ -77,10 +78,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private TextView recipeDocTextView;
     private TextView recipeTimeTextView;
     private TextView extraTextView;
+    private TextView problemLength_1_TextView;
+    private TextView problemLength_2_TextView;
     private Toast errorToast;
     private View includeBottomScreen;
     private View includeBodyProblems;
     private View includeRecipeScreen;
+    private View includeProblemPeriod;
     private ConstraintLayout micWalletContainer;
     private Button nextButton;
     private MediaPlayer mediaPlayer;
@@ -134,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         recipeTimeOfDayTextView = (TextView) findViewById(R.id.recipe_time_of_day_textView);
         recipeDocTextView = (TextView) findViewById(R.id.recipe_doc_textView);
         recipeTimeTextView = (TextView) findViewById(R.id.recipe_time_textView);
+        problemLength_1_TextView = (TextView) findViewById(R.id.problem_length_1_textView);
+        problemLength_2_TextView = (TextView) findViewById(R.id.problem_length_2_textView);
         profileImageView = (ImageView) findViewById(R.id.profile_imageView);
         extraImageView = (ImageView) findViewById(R.id.extra_imageView);
         mainImageView = (ImageView) findViewById(R.id.main_imageView);
@@ -152,9 +158,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         includeBottomScreen = (View) findViewById(R.id.include_bottom_screen);
         includeBodyProblems = (View) findViewById(R.id.include_body_problems);
         includeRecipeScreen = (View) findViewById(R.id.include_recipe_screen);
+        includeProblemPeriod = (View) findViewById(R.id.include_problem_period);
         nextButton = (Button) findViewById(R.id.next_button);
         extraAnimation = (LottieAnimationView) findViewById(R.id.extra_animation);
         animationRespondButton = (LottieAnimationView) findViewById(R.id.animation_respond_button);
+        mainLottieView = (LottieAnimationView) findViewById(R.id.main_lottieView);
         micImageView.setOnTouchListener(this);
         speechRecognizer.setRecognitionListener(this);
         initializeTextToSpeech();
@@ -242,16 +250,23 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     private void firstStage() {
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(14000, 1000) {
             @Override
             public void onTick(long l) {
                 switch ((int) (l/1000)) {
+                    case 11:
+                        mainLottieView.setAnimation("reception1_animation.json");
+                        mainLottieView.playAnimation();
+                        break;
                     case 8:
+                        mainLottieView.setVisibility(View.GONE);
+                        mainImageView.setVisibility(View.VISIBLE);
+                        mainImageView.setImageResource(R.drawable.reception);
+                        includeBottomScreen.setVisibility(View.VISIBLE);
                         profileImageView.setVisibility(View.VISIBLE);
                         profileTextView.setVisibility(View.VISIBLE);
                         profileImageView.setImageResource(R.drawable.nurse_reception);
                         profileTextView.setText("How can i help you");
-//                        textToSpeech.speak("How can i help you?", TextToSpeech.QUEUE_FLUSH, null, null);
                         mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nurse_reception_how_can_i_help_you);
                         mediaPlayer.start();
                         break;
@@ -658,10 +673,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 public void onTick(long l) {
                     switch ((int) (l / 1000)) {
                         case 14:
-                            includeBottomScreen.setVisibility(View.INVISIBLE);
-                            mainImageView.setImageResource(R.drawable.reception_lapse);
+//                            includeBottomScreen.setVisibility(View.INVISIBLE);
+//                            mainImageView.setImageResource(R.drawable.reception_lapse);
                             break;
-                        case 10:
+                        // TODO add lotti here
+                        case 12:
                             nextButton.setEnabled(true);
                             nextButton.setText("Next lesson");
                             micWalletContainer.setVisibility(View.VISIBLE);
