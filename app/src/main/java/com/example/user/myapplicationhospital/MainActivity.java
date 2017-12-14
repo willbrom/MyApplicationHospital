@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private static final String MR_ALEX = "Mr. Alex";
     private static final String MRS_KATE = "Mrs. Kate";
     private static final String MISS_LILY = "Miss Lily";
+    private static final String MONTHS = "months";
+    private static final String WEEKS = "weeks";
+    private static final String DAYS = "days";
     private BottomSheetBehavior bottomSheetBehavior;
     private LottieAnimationView extraAnimation;
     private LottieAnimationView animationRespondButton;
@@ -106,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private String mAESelected;
     private boolean whatTimeAsked;
     private String timeSelected;
+    private int problemLength1;
+    private String problemLength2;
     private boolean haveInsuranceAsked;
     private boolean bodyPartHighlighted;
     private boolean forHowLongAsked;
@@ -388,6 +393,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             @Override
             public void onFinish() {
+//                extraAnimation.setAnimation("respondbutton.json");
+//                extraAnimation.setVisibility(View.VISIBLE);
+//                extraAnimation.playAnimation(0, 170);
                 animationRespondButton.setVisibility(View.VISIBLE);
                 animationRespondButton.playAnimation(0, 170);
                 nameCalling();
@@ -401,6 +409,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             public void onTick(long l) {
                 switch ((int) (l/1000)) {
                     case 8:
+                        animationRespondButton.setVisibility(View.GONE);
                         profileImageView.setImageResource(R.drawable.man_hospital_waiting_area);
                         profileTextView.setText("Yes");
                         mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.male_yes);
@@ -930,11 +939,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             } else
                 wrongAnswer("bodyProblem");
         } else if(forHowLongAsked) {
-            for (String s : problemForHowLong) {
-                if (result.contains(s)) {
+//            for (String s : problemForHowLong) {
+            Log.d(TAG, "for how long result:" + result);
+                if (TextUtils.equals(result, problemLength1 + " " + problemLength2)) {
                     rightAnswer("one day");
                     return;
-                }
+//                }
             }
             wrongAnswer("one day");
         } else if(haveFeverAsked) {
@@ -1084,6 +1094,34 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         } else if (bodyPartHighlighted) {
             bodyPartHighlighted = false;
+
+            //determine the length of the problem
+            switch (random.nextInt(3)) {
+                case 0:
+                    problemLength2 = MONTHS;
+                    break;
+                case 1:
+                    problemLength2 = WEEKS;
+                    break;
+                case 2:
+                    problemLength2 = DAYS;
+            }
+
+            switch (problemLength2) {
+                case MONTHS:
+                    problemLength1 = random.nextInt(2) + 2;
+                    break;
+                case WEEKS:
+                    problemLength1 = random.nextInt(8) + 2;
+                    break;
+                case DAYS:
+                    problemLength1 = random.nextInt(56) + 2;
+                    break;
+            }
+
+            problemLength_2_TextView.setText(problemLength2);
+            problemLength_1_TextView.setText(problemLength1 + "");
+            includeProblemPeriod.setVisibility(View.VISIBLE);
             includeBodyProblems.setVisibility(View.GONE);
             extraAnimation.setVisibility(View.GONE);
             extraAnimation.loop(false);
@@ -1095,6 +1133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             forHowLongAsked = true;
         } else if (forHowLongAsked) {
             forHowLongAsked = false;
+            includeProblemPeriod.setVisibility(View.GONE);
             profileImageView.setImageResource(R.drawable.doctor_in_office);
             profileTextView.setText("Do you have fever?");
             mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.doc_male_do_you_have_fever);
@@ -1277,6 +1316,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if (profileTextView.getText().equals(MR_JOHN)) {
             waitingRoomCountdownTimer.cancel();
             animationRespondButton.playAnimation(170, 220);
+//            extraAnimation.playAnimation(170, 220);
             startStage(THIRD_STAGE_101);
         }
     }

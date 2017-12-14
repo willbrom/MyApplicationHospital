@@ -33,20 +33,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_imageAssetsFolder="images" />
 
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_respond_button"
-        android:layout_width="270dp"
-        android:layout_height="110dp"
-        android:layout_marginBottom="12dp"
-        app:lottie_fileName="respondbutton.json"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/include_bottom_screen"
-        app:srcCompat="@drawable/ic_launcher_background"
-        android:onClick="onClickResponseButton"
-        android:visibility="gone" />
-
     <include
         android:id="@+id/include_bottom_screen"
         layout="@layout/bottom_screen"

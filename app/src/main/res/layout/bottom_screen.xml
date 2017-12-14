@@ -77,13 +77,31 @@
                 app:lottie_imageAssetsFolder="images"
                 android:visibility="gone" />
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_respond_button"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="6dp"
+                app:lottie_imageAssetsFolder="images"
+                app:lottie_fileName="respondbutton.json"
+                android:visibility="gone"
+                android:onClick="onClickResponseButton" />
+
             <include layout="@layout/body_problems"
                 android:id="@+id/include_body_problems"
                 android:layout_height="150dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
+            <include layout="@layout/problem_period"
+                android:id="@+id/include_problem_period"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="16dp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
